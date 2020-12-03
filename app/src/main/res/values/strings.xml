@@ -1,3 +1,11 @@
 <resources>
 	<string name="app_name">NestEgg</string>
+
+	<!--region balances-->
+	<string name="balances_title">Balances</string>
+	<!--endregion-->
+
+	<!--region goals-->
+	<string name="goals_title">Goals</string>
+	<!--endregion-->
 </resources>

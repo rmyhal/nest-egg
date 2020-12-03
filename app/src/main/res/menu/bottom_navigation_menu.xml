@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/balances"
+        android:enabled="true"
+        android:icon="@drawable/ic_account_balance_24"
+        android:title="@string/balances_title" />
+    <item
+        android:id="@+id/goals"
+        android:enabled="false"
+        android:title="@string/goals_title" />
+</menu>

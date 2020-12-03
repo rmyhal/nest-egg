@@ -1,0 +1,14 @@
+import java.lang.Float;
+
+CREATE TABLE Balance (
+    name TEXT NOT NULL,
+    amount REAL AS Float NOT NULL DEFAULT 0,
+    currencyCode TEXT NOT NULL
+);
+
+insertBalance:
+INSERT OR REPLACE INTO Balance(name, amount, currencyCode)
+VALUES(?, ?, ?);
+
+selectAllBalances:
+SELECT * FROM Balance;
