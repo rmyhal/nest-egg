@@ -1,7 +1,5 @@
 package com.rmyhal.nestegg.ui.balances
 
-import android.icu.text.NumberFormat
-import android.icu.util.Currency
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rmyhal.nestegg.ui.Field
@@ -13,10 +11,6 @@ import kotlinx.coroutines.launch
 
 class BalancesViewModel(private val balancesInteractor: BalancesInteractor) : ViewModel() {
 
-    private val formatter = NumberFormat.getCurrencyInstance().apply {
-        currency = Currency.getInstance(DEFAULT_CURRENCY_CODE)
-    }
-
     private val _props = MutableStateFlow(BalancesFragment.Props())
     val props: StateFlow<BalancesFragment.Props>
         get() = _props
@@ -25,32 +19,25 @@ class BalancesViewModel(private val balancesInteractor: BalancesInteractor) : Vi
         viewModelScope.launch {
             launch {
                 balancesInteractor.totalBalance
-                    .collect { balance: Float ->
-                        formatter.currency = Currency.getInstance(DEFAULT_CURRENCY_CODE)
+                    .collect { balance ->
                         _props.value = _props.value.copy(
-                            totalBalance = Field(formatter.format(balance))
+                            totalBalance = Field(balance.toString())
                         )
                     }
             }
             launch {
                 balancesInteractor.getBalances()
-                    .collect { wallets ->
+                    .collect { balances ->
                         _props.value = _props.value.copy(
-                            balances = Field(wallets.map {
-                                formatter.currency = Currency.getInstance(it.currencyCode)
+                            balances = Field(balances.map { balance ->
                                 BalancesFragment.Props.Balance(
-                                    it.name,
-                                    formatter.format(it.amount)
+                                    balance.name,
+                                    balance.amount.toString()
                                 )
                             })
                         )
                     }
             }
         }
-    }
-
-    companion object {
-        //todo(should be remove and use currency code from [Balance] class)
-        private const val DEFAULT_CURRENCY_CODE = "USD"
     }
 }

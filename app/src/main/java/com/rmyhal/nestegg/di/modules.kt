@@ -1,5 +1,7 @@
 package com.rmyhal.nestegg.di
 
+import com.rmyhal.nestegg.ui.addbalance.AddBalanceFragment
+import com.rmyhal.nestegg.ui.addbalance.AddBalanceViewModel
 import com.rmyhal.nestegg.ui.balances.BalancesFragment
 import com.rmyhal.nestegg.ui.balances.BalancesViewModel
 import com.rmyhal.shared.NestEggSDK
@@ -11,10 +13,12 @@ import org.koin.dsl.module
 
 private val fragmentsModule = module {
     fragment { BalancesFragment(get()) }
+    fragment { AddBalanceFragment(get()) }
 }
 
 private val viewModelsModule = module {
     viewModel { BalancesViewModel(get()) }
+    viewModel { AddBalanceViewModel() }
 }
 
 private val sdkModule = module {

@@ -1,5 +1,31 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!--?xml version="1.0" encoding="UTF-8"?-->
 <resources>
-	<color name="brandPrimary">#FFFFFFFF</color>
-	<color name="brandPrimaryDark">#1B1919</color>
+    <color name="color_primary">#FFFFFF</color>
+    <color name="color_primary_variant">#AEAEB1</color>
+    <color name="color_secondary">#2A2931</color>
+    <color name="color_secondary_variant">#1D1D23</color>
+
+    <!--colorBackground appears behind scrollable content and is used for the default window-->
+    <!--background. colorSurface is mapped to the surface of components such as cards, sheets-->
+    <!--and menus. colorError is used to indicate an error state for components such as-->
+    <!--text fields.-->
+    <color name="color_surface">#24242B</color>
+    <color name="color_background">#222229</color>
+    <color name="color_error">#b00020</color>
+
+    <!--"On" colors define how text, icons and strokes are colored in relation to the surface-->
+    <!--on which they appear.-->
+    <color name="color_on_primary">#2A2931</color>
+    <color name="color_on_secondary">#ffffff</color>
+    <color name="color_on_background">#ffffff</color>
+    <color name="color_on_surface">#ffffff</color>
+    <color name="color_on_error">#ffffff</color>
+
+    <color name="color_status_bar">#27272F</color>
+
+    <color name="rally_green_300">#36F0AB</color>
+    <color name="rally_green_500">#21AF6C</color>
+    <color name="rally_green_700">#0E6C40</color>
+
+    <color name="rally_dark_green">#0C4B44</color>
 </resources>

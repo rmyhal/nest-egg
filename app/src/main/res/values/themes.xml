@@ -1,18 +1,36 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-	<!-- Base application theme. -->
-	<style name="Theme.NestEgg" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-		<!-- Primary brand color. -->
-		<item name="colorPrimary">@color/brandPrimary</item>
-		<item name="colorPrimaryVariant">@color/brandPrimary</item>
-		<item name="colorOnPrimary">@color/brandPrimaryDark</item>
-		<item name="android:textColor">@color/brandPrimaryDark</item>
-		<item name="backgroundColor">@color/brandPrimary</item>
-		<!-- Secondary brand color. -->
-<!--		<item name="colorSecondary">@color/teal_200</item>-->
-<!--		<item name="colorSecondaryVariant">@color/teal_700</item>-->
-<!--		<item name="colorOnSecondary">@color/black</item>-->
-<!--		 Status bar color. -->
-		<item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-		<!-- Customize your theme here. -->
-	</style>
+<resources>
+    <!-- Base application theme. -->
+    <style name="Theme.NestEgg" parent="Base.MaterialThemeBuilder">
+        <!--Material color attributes -->
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryVariant">@color/color_primary_variant</item>
+        <item name="colorSecondary">@color/color_secondary</item>
+        <item name="colorSecondaryVariant">@color/color_secondary_variant</item>
+
+        <item name="android:colorBackground">@color/color_background</item>
+        <item name="colorSurface">@color/color_surface</item>
+        <item name="colorError">@color/color_error</item>
+
+        <item name="colorOnPrimary">@color/color_on_primary</item>
+        <item name="colorOnSecondary">@color/color_on_secondary</item>
+        <item name="colorOnBackground">@color/color_on_background</item>
+        <item name="colorOnSurface">@color/color_on_surface</item>
+        <item name="colorOnError">@color/color_on_error</item>
+        <item name="android:textColorPrimary">#ffffff</item>
+        <item name="android:editTextColor">#ffffff</item>
+
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorLink">@color/color_primary_variant</item>
+        <item name="android:textColorLinkInverse">@color/color_secondary_variant</item>
+    </style>
+
+    <style name="Base.MaterialThemeBuilder" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:statusBarColor">?colorSurface</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <!--Remap legacy AppCompat attributes to MaterialComponent attributes-->
+        <item name="colorPrimaryDark">?colorPrimaryVariant</item>
+        <item name="colorAccent">?colorSecondary</item>
+    </style>
+
 </resources>

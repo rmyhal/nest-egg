@@ -8,5 +8,6 @@
     <item
         android:id="@+id/goals"
         android:enabled="false"
+        android:icon="@drawable/ic_goal_24"
         android:title="@string/goals_title" />
 </menu>
