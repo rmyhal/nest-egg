@@ -5,13 +5,23 @@ import android.icu.util.Currency
 
 class CurrencyFormatter {
 
-    private val formatter = NumberFormat.getCurrencyInstance().apply {
+    private val currencyFormatter = NumberFormat.getCurrencyInstance().apply {
         isGroupingUsed = true
         maximumFractionDigits = 0
     }
 
-    fun format(amount: Float, currencyCode: String): String {
-        formatter.currency = Currency.getInstance(currencyCode)
-        return formatter.format(amount)
+    private val numberFormatter = NumberFormat.getInstance().apply {
+        isGroupingUsed = true
+    }
+
+    fun toCurrencyFormat(amount: Float, currencyCode: String, fractionDigits: Int = 0): String {
+        currencyFormatter.currency = Currency.getInstance(currencyCode)
+        currencyFormatter.maximumFractionDigits = fractionDigits
+        return currencyFormatter.format(amount)
+    }
+
+    fun formatAmount(amount: Float, fractionDigits: Int = 0): String {
+        numberFormatter.maximumFractionDigits = fractionDigits
+        return numberFormatter.format(amount)
     }
 }

@@ -22,7 +22,7 @@ class BalancesViewModel(
         viewModelScope.launch {
             launch {
                 balancesInteractor.totalBalance.collect { balance ->
-                    _props.value = _props.value.copy(totalBalance = balance.toString())
+                    _props.value = _props.value.copy(totalBalance = formatter.formatAmount(balance))
                 }
             }
             launch {
@@ -31,7 +31,7 @@ class BalancesViewModel(
                         balances = balances.map { balance ->
                             BalancesFragment.Props.Balance(
                                 balance.name,
-                                formatter.format(balance.amount, balance.currencyCode)
+                                formatter.toCurrencyFormat(balance.amount, balance.currencyCode)
                             )
                         }
                     )
