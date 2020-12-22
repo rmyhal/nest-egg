@@ -7,6 +7,12 @@
 
     <!--region add balance-->
     <string name="add_balance_title">Add balance</string>
+    <string name="add_balance_currency_hint">Currency</string>
+    <string name="add_balance_amount_hint">Amount</string>
+    <string name="add_balance_name_hint">Balance name</string>
+    <string name="add_balance_name_error">Name is required</string>
+    <string name="add_balance_amount_error">Amount is required</string>
+    <string name="add_balance_currency_error">Currency is required</string>
     <!--endregion-->
 
     <!--region goals-->

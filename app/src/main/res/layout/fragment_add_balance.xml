@@ -6,10 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:transitionName="shared-balance">
+    android:transitionName="@string/add_balance_shared">
 
     <ImageButton
-        android:id="@+id/imgClose"
+        android:id="@+id/btnClose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="?attr/actionBarItemBackground"
@@ -24,9 +24,20 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="@string/add_balance_title"
-        app:layout_constraintBottom_toBottomOf="@id/imgClose"
-        app:layout_constraintStart_toEndOf="@id/imgClose"
-        app:layout_constraintTop_toTopOf="@id/imgClose" />
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@id/btnClose"
+        app:layout_constraintStart_toEndOf="@id/btnClose"
+        app:layout_constraintTop_toTopOf="@id/btnClose" />
+
+    <ImageButton
+        android:id="@+id/btnDone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?attr/actionBarItemBackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_done_24"
+        tools:ignore="ContentDescription" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/txtName"
@@ -34,14 +45,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:hint="Balance name"
+        android:hint="@string/add_balance_name_hint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtTitle">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:imeOptions="actionNext"
+            android:inputType="text"
+            android:maxLines="1"
+            android:nextFocusDown="@id/txtAmount" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -50,8 +65,9 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Amount"
-        app:layout_constraintEnd_toStartOf="@id/txtCurrency"
+        android:hint="@string/add_balance_amount_hint"
+        android:nextFocusRight="@id/currencyInputLayout"
+        app:layout_constraintEnd_toStartOf="@id/currencyInputLayout"
         app:layout_constraintHorizontal_weight="3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtName">
@@ -59,26 +75,31 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:inputType="numberDecimal" />
+            android:imeOptions="actionNext"
+            android:inputType="numberDecimal"
+            android:nextFocusRight="@id/currencyInputLayout" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/txtCurrency"
+        android:id="@+id/currencyInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Currency"
-        app:layout_constraintBottom_toBottomOf="@id/txtAmount"
+        android:layout_marginStart="8dp"
+        android:hint="@string/add_balance_currency_hint"
+        android:nextFocusUp="@id/btnDone"
+        app:layout_constraintBaseline_toBaselineOf="@id/txtAmount"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toEndOf="@id/txtAmount"
-        app:layout_constraintTop_toTopOf="@id/txtAmount">
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintStart_toEndOf="@id/txtAmount">
 
         <AutoCompleteTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="none" />
+            android:inputType="none"
+            android:nextFocusUp="@id/btnDone"
+            tools:ignore="LabelFor" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

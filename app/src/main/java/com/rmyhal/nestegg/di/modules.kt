@@ -18,7 +18,7 @@ private val fragmentsModule = module {
 
 private val viewModelsModule = module {
     viewModel { BalancesViewModel(get()) }
-    viewModel { AddBalanceViewModel() }
+    viewModel { AddBalanceViewModel(get()) }
 }
 
 private val sdkModule = module {
