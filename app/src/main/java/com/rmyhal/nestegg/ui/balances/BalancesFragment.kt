@@ -8,10 +8,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rmyhal.nestegg.databinding.FragmentBalancesBinding
-import com.rmyhal.nestegg.ui.Field
 import com.rmyhal.nestegg.ui.base.BaseFragment
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import java.lang.IllegalStateException
 
 class BalancesFragment(private val viewModel: BalancesViewModel) : BaseFragment<FragmentBalancesBinding>() {
@@ -41,8 +39,8 @@ class BalancesFragment(private val viewModel: BalancesViewModel) : BaseFragment<
     }
 
     private fun render(props: Props) = with(binding) {
-        txtTotalAmount.text = props.totalBalance.value
-        balancesAdapter.setWallets(props.balances.value)
+        txtTotalAmount.text = props.totalBalance
+        balancesAdapter.setWallets(props.balances)
         fabAddBalance.setOnClickListener {
             addBalanceNavigation.navigateToAddBalance(fabAddBalance)
         }
@@ -55,8 +53,8 @@ class BalancesFragment(private val viewModel: BalancesViewModel) : BaseFragment<
     }
 
     data class Props(
-        val totalBalance: Field<String> = Field("0"),
-        val balances: Field<List<Balance>> = Field(emptyList()),
+        val totalBalance: String = "0",
+        val balances: List<Balance> = emptyList(),
     ) {
         data class Balance(val name: String, val amount: String)
     }
