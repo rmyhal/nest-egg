@@ -1,21 +1,18 @@
 package com.rmyhal.nestegg.ui.balances
 
-import android.icu.text.NumberFormat
-import android.icu.util.Currency
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rmyhal.nestegg.ui.global.CurrencyFormatter
 import com.rmyhal.shared.interactor.BalancesInteractor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class BalancesViewModel(private val balancesInteractor: BalancesInteractor) : ViewModel() {
-
-    private val format = NumberFormat.getCurrencyInstance().apply {
-        isGroupingUsed = true
-        maximumFractionDigits = 0
-    }
+class BalancesViewModel(
+    private val balancesInteractor: BalancesInteractor,
+    private val formatter: CurrencyFormatter
+) : ViewModel() {
 
     private val _props = MutableStateFlow(BalancesFragment.Props())
     val props: StateFlow<BalancesFragment.Props>
@@ -32,8 +29,10 @@ class BalancesViewModel(private val balancesInteractor: BalancesInteractor) : Vi
                 balancesInteractor.getBalances().collect { balances ->
                     _props.value = _props.value.copy(
                         balances = balances.map { balance ->
-                            format.currency = Currency.getInstance(balance.currencyCode)
-                            BalancesFragment.Props.Balance(balance.name, format.format(balance.amount))
+                            BalancesFragment.Props.Balance(
+                                balance.name,
+                                formatter.format(balance.amount, balance.currencyCode)
+                            )
                         }
                     )
                 }

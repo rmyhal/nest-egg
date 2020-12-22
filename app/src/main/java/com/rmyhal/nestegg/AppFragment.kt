@@ -11,7 +11,7 @@ import com.rmyhal.nestegg.databinding.FragmentAppBinding
 import com.rmyhal.nestegg.ui.addbalance.AddBalanceFragment
 import com.rmyhal.nestegg.ui.balances.BalancesFragment
 import com.rmyhal.nestegg.ui.base.BaseFragment
-import com.rmyhal.nestegg.util.OnFragmentDismissListener
+import com.rmyhal.nestegg.ui.global.OnFragmentDismissListener
 
 class AppFragment : BaseFragment<FragmentAppBinding>(), OnFragmentDismissListener, BalancesFragment.AddBalanceNavigation {
 

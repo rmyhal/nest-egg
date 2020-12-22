@@ -15,7 +15,7 @@ import com.google.android.material.transition.MaterialContainerTransform
 import com.rmyhal.nestegg.R
 import com.rmyhal.nestegg.databinding.FragmentAddBalanceBinding
 import com.rmyhal.nestegg.ui.base.BaseFragment
-import com.rmyhal.nestegg.util.OnFragmentDismissListener
+import com.rmyhal.nestegg.ui.global.OnFragmentDismissListener
 import com.rmyhal.nestegg.util.themeColor
 import kotlinx.coroutines.flow.collect
 import java.lang.IllegalStateException

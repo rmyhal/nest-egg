@@ -1,4 +1,4 @@
-package com.rmyhal.nestegg.util
+package com.rmyhal.nestegg.ui.global
 
 interface OnFragmentDismissListener {
     fun dismiss()
