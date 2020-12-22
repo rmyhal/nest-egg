@@ -15,6 +15,7 @@ import java.lang.IllegalStateException
 class BalancesFragment(private val viewModel: BalancesViewModel) : BaseFragment<FragmentBalancesBinding>() {
 
     private val balancesAdapter = BalancesAdapter()
+    private var arrowsRotated = false
     private lateinit var addBalanceNavigation: AddBalanceNavigation
 
     override fun bind(inflater: LayoutInflater, container: ViewGroup?): FragmentBalancesBinding {
@@ -36,6 +37,7 @@ class BalancesFragment(private val viewModel: BalancesViewModel) : BaseFragment<
             viewModel.props.collect(::render)
         }
         initRecycler()
+        setupListeners()
     }
 
     private fun render(props: Props) = with(binding) {
@@ -50,6 +52,16 @@ class BalancesFragment(private val viewModel: BalancesViewModel) : BaseFragment<
         binding.rvBalances.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.rvBalances.adapter = balancesAdapter
+    }
+
+    private fun setupListeners() {
+        binding.txtTotalCurrency.setOnClickListener {
+            val scale = if (arrowsRotated) 1f else -1f
+            binding.imgArrows.animate()
+                .scaleY(scale)
+                .start()
+            arrowsRotated = arrowsRotated.not()
+        }
     }
 
     data class Props(
