@@ -13,8 +13,7 @@ import com.rmyhal.nestegg.ui.balances.BalancesFragment
 import com.rmyhal.nestegg.ui.base.BaseFragment
 import com.rmyhal.nestegg.util.OnFragmentDismissListener
 
-class AppFragment : BaseFragment<FragmentAppBinding>(), OnFragmentDismissListener,
-    BalancesFragment.AddBalanceNavigation {
+class AppFragment : BaseFragment<FragmentAppBinding>(), OnFragmentDismissListener, BalancesFragment.AddBalanceNavigation {
 
     companion object {
         private const val DEFAULT_SELECTED_BOTTOM_ITEM_ID = R.id.balances
