@@ -1,4 +1,4 @@
-package com.rmyhal.shared.cache
+package com.rmyhal.shared.data.cache
 
 import com.squareup.sqldelight.db.SqlDriver
 

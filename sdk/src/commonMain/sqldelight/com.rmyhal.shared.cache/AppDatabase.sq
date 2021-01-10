@@ -7,8 +7,27 @@ CREATE TABLE Balance (
 );
 
 insertBalance:
-INSERT OR REPLACE INTO Balance(name, amount, currencyCode)
+INSERT OR REPLACE
+INTO Balance
 VALUES(?, ?, ?);
 
-selectAllBalances:
-SELECT * FROM Balance;
+getAllBalances:
+SELECT *
+FROM Balance;
+
+CREATE TABLE ExchangeRate (
+    currencyTo TEXT NOT NULL,
+    rate REAL AS Float NOT NULL DEFAULT 1,
+    currencyFrom TEXT NOT NULL,
+    PRIMARY KEY (currencyTo, currencyFrom)
+);
+
+getRatesForCurrency:
+SELECT *
+FROM ExchangeRate
+WHERE currencyFrom = :code;
+
+insertExchangeRate:
+INSERT OR REPLACE
+INTO ExchangeRate
+VALUES(?, ?, ?);

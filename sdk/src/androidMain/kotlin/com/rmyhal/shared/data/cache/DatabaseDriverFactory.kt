@@ -1,4 +1,4 @@
-package com.rmyhal.shared.cache
+package com.rmyhal.shared.data.cache
 
 import android.content.Context
 import com.squareup.sqldelight.android.AndroidSqliteDriver
