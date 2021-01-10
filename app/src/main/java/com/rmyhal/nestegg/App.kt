@@ -1,6 +1,8 @@
 package com.rmyhal.nestegg
 
 import android.app.Application
+import com.github.aakira.napier.DebugAntilog
+import com.github.aakira.napier.Napier
 import com.rmyhal.nestegg.di.appModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -16,6 +18,13 @@ class App : Application() {
             androidContext(this@App)
             fragmentFactory()
             modules(appModules)
+        }
+        initLogger()
+    }
+
+    private fun initLogger() {
+        if (BuildConfig.DEBUG) {
+            Napier.base(DebugAntilog())
         }
     }
 }
