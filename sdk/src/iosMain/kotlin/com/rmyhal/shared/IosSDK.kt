@@ -1,11 +1,21 @@
 package com.rmyhal.shared
 
+import com.github.aakira.napier.DebugAntilog
+import com.github.aakira.napier.Napier
 import com.rmyhal.shared.adapter.IosBalancesInteractor
-import com.rmyhal.shared.cache.DatabaseDriverFactory
+import com.rmyhal.shared.data.cache.DatabaseDriverFactory
+import com.rmyhal.shared.data.cache.Prefs
 
-class IosSDK(databaseDriverFactory: DatabaseDriverFactory) {
+class IosSDK(
+    databaseDriverFactory: DatabaseDriverFactory,
+    isDebug: Boolean
+) {
 
-    private val sdk = NestEggSDK(databaseDriverFactory)
+    init {
+        if (isDebug) Napier.base(DebugAntilog())
+    }
 
-    fun homeInteractor() = IosBalancesInteractor(sdk.balanceInteractor())
+    private val sdk = NestEgg(Prefs(), databaseDriverFactory)
+
+    fun homeInteractor() = IosBalancesInteractor(sdk.balancesInteractor())
 }
