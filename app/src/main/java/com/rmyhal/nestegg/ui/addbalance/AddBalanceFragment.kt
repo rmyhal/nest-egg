@@ -18,7 +18,7 @@ import com.rmyhal.nestegg.ui.base.BaseFragment
 import com.rmyhal.nestegg.ui.global.OnFragmentDismissListener
 import com.rmyhal.nestegg.util.themeColor
 import kotlinx.coroutines.flow.collect
-import java.lang.IllegalStateException
+
 
 class AddBalanceFragment(private val viewModel: AddBalanceViewModel) : BaseFragment<FragmentAddBalanceBinding>() {
 

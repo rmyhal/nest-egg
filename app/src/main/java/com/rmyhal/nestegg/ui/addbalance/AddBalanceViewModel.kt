@@ -2,15 +2,17 @@ package com.rmyhal.nestegg.ui.addbalance
 
 import androidx.lifecycle.ViewModel
 import com.rmyhal.shared.interactor.BalancesInteractor
+import com.rmyhal.shared.interactor.CurrenciesInteractor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class AddBalanceViewModel(private val balancesInteractor: BalancesInteractor) : ViewModel() {
+class AddBalanceViewModel(
+    private val balancesInteractor: BalancesInteractor,
+    currenciesInteractor: CurrenciesInteractor
+) : ViewModel() {
 
-    // todo(get from API)
-    private val availableCurrencies = listOf("USD", "UAH", "EUR")
-
-    private val _props = MutableStateFlow(AddBalanceFragment.Props(availableCurrencies))
+    private val _props =
+        MutableStateFlow(AddBalanceFragment.Props(currencies = currenciesInteractor.supportedCurrencies.toList()))
     val props: StateFlow<AddBalanceFragment.Props>
         get() = _props
 
