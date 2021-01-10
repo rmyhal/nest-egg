@@ -5,7 +5,7 @@ import com.rmyhal.nestegg.ui.addbalance.AddBalanceViewModel
 import com.rmyhal.nestegg.ui.balances.BalancesFragment
 import com.rmyhal.nestegg.ui.balances.BalancesViewModel
 import com.rmyhal.nestegg.ui.global.CurrencyFormatter
-import com.rmyhal.shared.NestEggSDK
+import com.rmyhal.shared.NestEgg
 import com.rmyhal.shared.create
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.fragment.dsl.fragment
@@ -18,8 +18,8 @@ private val fragmentsModule = module {
 }
 
 private val viewModelsModule = module {
-    viewModel { BalancesViewModel(get(), get()) }
-    viewModel { AddBalanceViewModel(get()) }
+    viewModel { BalancesViewModel(get(), get(), get()) }
+    viewModel { AddBalanceViewModel(get(), get()) }
 }
 
 private val globalModule = module {
@@ -27,8 +27,10 @@ private val globalModule = module {
 }
 
 private val sdkModule = module {
-    single { NestEggSDK.create(androidContext()) }
-    factory { get<NestEggSDK>().balanceInteractor() }
+    single { NestEgg.create(androidContext()) }
+    factory { get<NestEgg>().balancesInteractor() }
+    factory { get<NestEgg>().currenciesInteractor() }
+    factory { get<NestEgg>().ratesInteractor() }
 }
 
 val appModules = listOf(sdkModule, viewModelsModule, fragmentsModule, globalModule)
