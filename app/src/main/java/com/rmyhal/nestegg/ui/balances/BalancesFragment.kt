@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.rmyhal.nestegg.databinding.FragmentBalancesBinding
 import com.rmyhal.nestegg.ui.base.BaseFragment
 import kotlinx.coroutines.flow.collect
-import java.lang.IllegalStateException
 
 class BalancesFragment(private val viewModel: BalancesViewModel) : BaseFragment<FragmentBalancesBinding>() {
 
@@ -42,10 +41,8 @@ class BalancesFragment(private val viewModel: BalancesViewModel) : BaseFragment<
 
     private fun render(props: Props) = with(binding) {
         txtTotalAmount.text = props.totalBalance
+        txtTotalCurrency.text = props.currency
         balancesAdapter.setWallets(props.balances)
-        fabAddBalance.setOnClickListener {
-            addBalanceNavigation.navigateToAddBalance(fabAddBalance)
-        }
     }
 
     private fun initRecycler() {
@@ -56,16 +53,25 @@ class BalancesFragment(private val viewModel: BalancesViewModel) : BaseFragment<
 
     private fun setupListeners() {
         binding.txtTotalCurrency.setOnClickListener {
-            val scale = if (arrowsRotated) 1f else -1f
-            binding.imgArrows.animate()
-                .scaleY(scale)
-                .start()
-            arrowsRotated = arrowsRotated.not()
+            animateArrows()
+            viewModel.onCurrencyClicked()
         }
+        binding.fabAddBalance.setOnClickListener {
+            addBalanceNavigation.navigateToAddBalance(binding.fabAddBalance)
+        }
+    }
+
+    private fun animateArrows() {
+        val scale = if (arrowsRotated) 1f else -1f
+        binding.imgArrows.animate()
+            .scaleY(scale)
+            .start()
+        arrowsRotated = arrowsRotated.not()
     }
 
     data class Props(
         val totalBalance: String = "0",
+        val currency: String = "",
         val balances: List<Balance> = emptyList(),
     ) {
         data class Balance(val name: String, val amount: String)

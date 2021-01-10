@@ -32,15 +32,16 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:textSize="42sp"
+        android:layout_marginEnd="32dp"
         android:textStyle="bold"
         app:layout_constraintBaseline_toBaselineOf="@id/txtTotalAmount"
-        app:layout_constraintStart_toEndOf="@id/txtTotalAmount"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="$" />
 
     <ImageView
         android:id="@+id/imgArrows"
-        android:layout_width="14dp"
-        android:layout_height="14dp"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
         app:layout_constraintBottom_toBottomOf="@id/txtTotalCurrency"
         app:layout_constraintStart_toEndOf="@id/txtTotalCurrency"
         app:layout_constraintTop_toTopOf="@id/txtTotalCurrency"
