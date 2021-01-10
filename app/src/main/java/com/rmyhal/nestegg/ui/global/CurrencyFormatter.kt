@@ -5,6 +5,8 @@ import android.icu.util.Currency
 
 class CurrencyFormatter {
 
+    private val missedCurrencySymbols = mapOf("UAH" to "₴")
+
     private val currencyFormatter = NumberFormat.getCurrencyInstance().apply {
         isGroupingUsed = true
         maximumFractionDigits = 0
@@ -24,4 +26,7 @@ class CurrencyFormatter {
         numberFormatter.maximumFractionDigits = fractionDigits
         return numberFormatter.format(amount)
     }
+
+    fun getCurrencySymbol(code: String): String =
+        missedCurrencySymbols.getOrElse(code, { Currency.getInstance(code).symbol })
 }
