@@ -4,9 +4,7 @@ import com.rmyhal.shared.data.cache.Database
 import com.rmyhal.shared.data.cache.entity.BalanceEntity
 import com.rmyhal.shared.entity.Balance
 import com.rmyhal.shared.entity.TotalBalance
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.flow.*
 
 class BalancesInteractor internal constructor(
     private val database: Database,
@@ -14,7 +12,7 @@ class BalancesInteractor internal constructor(
 ) {
 
     fun getBalances(): Flow<List<Balance>> = database.getAllBalances()
-        .transform { balances -> balances.map { Balance(it.name, it.amount, it.currencyCode) } }
+        .transform { balances -> emit(balances.map { Balance(it.name, it.amount, it.currencyCode) }) }
 
     fun saveBalance(name: String, amount: Float, currencyCode: String) {
         database.insertBalance(BalanceEntity(name, amount, currencyCode))
