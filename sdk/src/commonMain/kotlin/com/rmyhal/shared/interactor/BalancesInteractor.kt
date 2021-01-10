@@ -1,22 +1,34 @@
 package com.rmyhal.shared.interactor
 
-import com.rmyhal.shared.cache.Database
-import com.rmyhal.shared.cache.entity.Balance
+import com.rmyhal.shared.data.cache.Database
+import com.rmyhal.shared.data.cache.entity.BalanceEntity
+import com.rmyhal.shared.entity.Balance
+import com.rmyhal.shared.entity.TotalBalance
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.transform
 
-class BalancesInteractor internal constructor(private val database: Database) {
-
-    val totalBalance: Flow<Float> = database.getAllBalances()
-        .map(::calculateTotalBalance)
+class BalancesInteractor internal constructor(
+    private val database: Database,
+    private val ratesInteractor: RatesInteractor
+) {
 
     fun getBalances(): Flow<List<Balance>> = database.getAllBalances()
+        .transform { balances -> balances.map { Balance(it.name, it.amount, it.currencyCode) } }
 
     fun saveBalance(name: String, amount: Float, currencyCode: String) {
-        database.insertBalance(Balance(name, amount, currencyCode))
+        database.insertBalance(BalanceEntity(name, amount, currencyCode))
     }
 
-    private fun calculateTotalBalance(balances: List<Balance>): Float {
-        return balances.map { it.amount }.reduceOrNull { acc, fl -> acc + fl } ?: 0F
+    fun getTotalBalance(baseCurrency: String): Flow<TotalBalance> {
+        return database.getAllBalances()
+            .map { balances ->
+                val rates = ratesInteractor.getRatesForCurrency(baseCurrency)
+                var result = 0f
+                balances.forEachIndexed { index, balance ->
+                    result += balance.amount / rates.getValue(balances[index].currencyCode)
+                }
+                TotalBalance(result, baseCurrency)
+            }
     }
 }
