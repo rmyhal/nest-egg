@@ -6,7 +6,7 @@ plugins {
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "29.0.3"
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.rmyhal.nestegg"
@@ -40,7 +40,6 @@ dependencies {
     implementation(project(':sdk'))
 
     // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.0'
 
     // Jetpack
@@ -55,6 +54,9 @@ dependencies {
     implementation "org.koin:koin-androidx-scope:$koin_version"
     implementation "org.koin:koin-androidx-viewmodel:$koin_version"
     implementation "org.koin:koin-androidx-fragment:$koin_version"
+
+    // Log
+    implementation("com.github.aakira:napier:1.5.0-alpha1")
 
     // Test
     testImplementation 'junit:junit:4.13.1'

@@ -34,6 +34,7 @@ kotlin {
 
     val serializationVersion = "1.0.0-RC"
     val sqldelightVersion = "1.4.3"
+    val ktorVersion = "1.4.0"
 
     sourceSets {
         val commonMain by getting {
@@ -41,8 +42,11 @@ kotlin {
                 implementation("com.squareup.sqldelight:runtime:$sqldelightVersion")
                 implementation("com.squareup.sqldelight:coroutines-extensions:$sqldelightVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1")
                 implementation("com.github.aakira:napier:1.5.0-alpha1")
+                implementation("io.ktor:ktor-client-core:$ktorVersion")
+                implementation("io.ktor:ktor-client-serialization:$ktorVersion")
+                implementation("io.ktor:ktor-client-logging:$ktorVersion")
             }
         }
         val commonTest by getting {
@@ -54,27 +58,24 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation("com.squareup.sqldelight:android-driver:$sqldelightVersion")
-                implementation("androidx.core:core-ktx:1.3.2")
+                implementation("io.ktor:ktor-client-android:$ktorVersion")
+                implementation("androidx.datastore:datastore-preferences:1.0.0-alpha05")
             }
         }
         val iosMain by getting {
             dependencies {
-                implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9-native-mt"){
-//                    version {
-//                        strictly("1.3.9-native-mt")
-//                    }
-                }
                 implementation("com.squareup.sqldelight:native-driver:$sqldelightVersion")
+                implementation("io.ktor:ktor-client-ios:$ktorVersion")
             }
         }
     }
 }
 android {
-    compileSdkVersion(29)
+    compileSdkVersion(30)
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdkVersion(24)
-        targetSdkVersion(29)
+        targetSdkVersion(30)
         versionCode = 1
         versionName = "1.0"
     }
@@ -85,9 +86,15 @@ android {
     }
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
 sqldelight {
     database("AppDatabase") {
-        packageName = "com.rmyhal.shared.cache"
+        packageName = "com.rmyhal.shared.data.cache"
     }
 }
 
