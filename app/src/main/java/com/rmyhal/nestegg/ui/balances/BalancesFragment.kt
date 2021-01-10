@@ -42,7 +42,7 @@ class BalancesFragment(private val viewModel: BalancesViewModel) : BaseFragment<
     private fun render(props: Props) = with(binding) {
         txtTotalAmount.text = props.totalBalance
         txtTotalCurrency.text = props.currency
-        balancesAdapter.setWallets(props.balances)
+        balancesAdapter.setBalances(props.balances)
     }
 
     private fun initRecycler() {

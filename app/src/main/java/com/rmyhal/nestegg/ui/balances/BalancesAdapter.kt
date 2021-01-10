@@ -21,7 +21,7 @@ class BalancesAdapter : RecyclerView.Adapter<BalancesAdapter.BalanceViewHolder>(
         holder.bind(balances[position])
     }
 
-    fun setWallets(newBalances: List<BalancesFragment.Props.Balance>) {
+    fun setBalances(newBalances: List<BalancesFragment.Props.Balance>) {
         balances.clear()
         balances.addAll(newBalances)
         notifyDataSetChanged()
