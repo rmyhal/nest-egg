@@ -32,9 +32,8 @@ class BalancesFragment(private val viewModel: BalancesViewModel) : BaseFragment<
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        lifecycleScope.launchWhenStarted {
-            viewModel.props.collect(::render)
-        }
+        lifecycleScope.launchWhenStarted { viewModel.props.collect(::render) }
+        lifecycleScope.launchWhenStarted { viewModel.actions.collect(::handleAction) }
         initRecycler()
         setupListeners()
     }
@@ -45,6 +44,13 @@ class BalancesFragment(private val viewModel: BalancesViewModel) : BaseFragment<
         balancesAdapter.setBalances(props.balances)
     }
 
+    private fun handleAction(action: BalancesViewModel.Action) {
+        when (action) {
+            BalancesViewModel.Action.OnAddBalanceClicked -> addBalanceNavigation.navigateToAddBalance(binding.fabAddBalance)
+            BalancesViewModel.Action.OnTotalBalanceCurrencyClicked -> animateArrows()
+        }
+    }
+
     private fun initRecycler() {
         binding.rvBalances.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -53,11 +59,10 @@ class BalancesFragment(private val viewModel: BalancesViewModel) : BaseFragment<
 
     private fun setupListeners() {
         binding.txtTotalCurrency.setOnClickListener {
-            animateArrows()
-            viewModel.onCurrencyClicked()
+            viewModel.onAction(BalancesViewModel.Action.OnTotalBalanceCurrencyClicked)
         }
         binding.fabAddBalance.setOnClickListener {
-            addBalanceNavigation.navigateToAddBalance(binding.fabAddBalance)
+            viewModel.onAction(BalancesViewModel.Action.OnAddBalanceClicked)
         }
     }
 
@@ -70,8 +75,8 @@ class BalancesFragment(private val viewModel: BalancesViewModel) : BaseFragment<
     }
 
     data class Props(
-        val totalBalance: String = "0",
-        val currency: String = "",
+        val totalBalance: String = "-",
+        val currency: String = "/",
         val balances: List<Balance> = emptyList(),
     ) {
         data class Balance(val name: String, val amount: String)

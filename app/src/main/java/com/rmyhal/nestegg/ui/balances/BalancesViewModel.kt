@@ -3,23 +3,28 @@ package com.rmyhal.nestegg.ui.balances
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rmyhal.nestegg.ui.global.CurrencyFormatter
+import com.rmyhal.nestegg.util.ExceptionHandler
 import com.rmyhal.shared.interactor.BalancesInteractor
 import com.rmyhal.shared.interactor.CurrenciesInteractor
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class BalancesViewModel(
     private val balancesInteractor: BalancesInteractor,
     private val currenciesInteractor: CurrenciesInteractor,
-    private val formatter: CurrencyFormatter
+    private val formatter: CurrencyFormatter,
+    private val exceptionHandler: ExceptionHandler
 ) : ViewModel() {
 
     private val _props = MutableStateFlow(BalancesFragment.Props())
     val props: StateFlow<BalancesFragment.Props>
         get() = _props
+
+    private val actionChannel: Channel<Action> = Channel(Channel.RENDEZVOUS)
+    val actions: Flow<Action>
+        get() = actionChannel.consumeAsFlow()
 
     private var totalBalanceJob: Job? = null
     private var selectedCurrency = currenciesInteractor.getLastSelectedCurrencyCode()
@@ -43,7 +48,15 @@ class BalancesViewModel(
         }
     }
 
-    fun onCurrencyClicked() {
+    fun onAction(action: Action) {
+        when (action) {
+            Action.OnTotalBalanceCurrencyClicked -> changeTotalBalanceCurrency()
+            else -> {}
+        }
+        actionChannel.offer(action)
+    }
+
+    private fun changeTotalBalanceCurrency() {
         totalBalanceJob?.cancel()
         supportedCurrencies.remove(selectedCurrency)
         if (supportedCurrencies.isEmpty()) {
@@ -53,7 +66,7 @@ class BalancesViewModel(
         totalBalanceJob = getTotalBalance(selectedCurrency)
     }
 
-    private fun getTotalBalance(baseCurrency: String): Job = viewModelScope.launch {
+    private fun getTotalBalance(baseCurrency: String): Job = viewModelScope.launch(exceptionHandler.handler) {
         balancesInteractor.getTotalBalance(baseCurrency)
             .collect { balance ->
                 _props.value = _props.value.copy(
@@ -61,5 +74,10 @@ class BalancesViewModel(
                     currency = formatter.getCurrencySymbol(balance.currency)
                 )
             }
+    }
+
+    sealed class Action {
+        object OnAddBalanceClicked : Action()
+        object OnTotalBalanceCurrencyClicked : Action()
     }
 }

@@ -18,4 +18,10 @@
     <!--region goals-->
     <string name="goals_title">Goals</string>
     <!--endregion-->
+
+    <!--region utils-->
+    <string name="connection_error">Can\'t connect to the internet, check your connection and try again.</string>
+    <string name="general_error">Something went wrong</string>
+    <string name="fab_tag">fab</string>
+    <!--endregion-->
 </resources>

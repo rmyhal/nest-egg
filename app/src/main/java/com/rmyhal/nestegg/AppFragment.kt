@@ -6,18 +6,26 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.transition.MaterialElevationScale
 import com.rmyhal.nestegg.databinding.FragmentAppBinding
 import com.rmyhal.nestegg.ui.addbalance.AddBalanceFragment
 import com.rmyhal.nestegg.ui.balances.BalancesFragment
 import com.rmyhal.nestegg.ui.base.BaseFragment
 import com.rmyhal.nestegg.ui.global.OnFragmentDismissListener
+import com.rmyhal.nestegg.system.SystemMessage
+import com.rmyhal.nestegg.system.SystemMessageNotifier
+import kotlinx.coroutines.flow.collect
+import org.koin.android.ext.android.inject
 
-class AppFragment : BaseFragment<FragmentAppBinding>(), OnFragmentDismissListener, BalancesFragment.AddBalanceNavigation {
+class AppFragment : BaseFragment<FragmentAppBinding>(), OnFragmentDismissListener,
+    BalancesFragment.AddBalanceNavigation {
 
     companion object {
         private const val DEFAULT_SELECTED_BOTTOM_ITEM_ID = R.id.balances
     }
+
+    private val systemMessageNotifier: SystemMessageNotifier by inject()
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -41,6 +49,9 @@ class AppFragment : BaseFragment<FragmentAppBinding>(), OnFragmentDismissListene
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        lifecycleScope.launchWhenStarted {
+            systemMessageNotifier.messages.collect(::handleMessage)
+        }
         initBottomNavigation()
     }
 
@@ -63,6 +74,10 @@ class AppFragment : BaseFragment<FragmentAppBinding>(), OnFragmentDismissListene
 
     override fun dismiss() {
         childFragmentManager.popBackStack()
+    }
+
+    private fun handleMessage(message: SystemMessage) {
+        snackBar(message.text)
     }
 
     private fun initBottomNavigation() {

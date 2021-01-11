@@ -6,6 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
+import com.rmyhal.nestegg.R
 
 abstract class BaseFragment<B : ViewBinding> : Fragment() {
 
@@ -29,5 +32,16 @@ abstract class BaseFragment<B : ViewBinding> : Fragment() {
         _binding = null
     }
 
-    abstract fun bind(inflater: LayoutInflater, container: ViewGroup?): B
+    protected abstract fun bind(inflater: LayoutInflater, container: ViewGroup?): B
+
+    protected fun snackBar(text: String) {
+        Snackbar.make(binding.root, text, Snackbar.LENGTH_LONG)
+            .apply {
+                val fab = findFabOrNull()
+                if (fab != null) anchorView = fab
+                show()
+            }
+    }
+
+    private fun findFabOrNull(): View? = view?.findViewWithTag<FloatingActionButton>(getString(R.string.fab_tag))
 }
