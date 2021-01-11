@@ -2,7 +2,7 @@
     <string name="app_name">NestEgg</string>
 
     <!--region balances-->
-    <string name="balances_title">Balances</string>
+    <string name="balances_title">Account Balance</string>
     <!--endregion-->
 
     <!--region add balance-->

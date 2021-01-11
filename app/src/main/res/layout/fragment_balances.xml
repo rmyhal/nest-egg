@@ -18,10 +18,13 @@
 
     <TextView
         android:id="@+id/txtTotalAmount"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:maxLines="1"
         android:textSize="42sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/txtTotalCurrency"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtBalances"
         tools:text="49,901" />
@@ -30,12 +33,12 @@
         android:id="@+id/txtTotalCurrency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="16dp"
         android:textSize="42sp"
         android:textStyle="bold"
         app:layout_constraintBaseline_toBaselineOf="@id/txtTotalAmount"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/txtTotalAmount"
         tools:text="$" />
 
     <ImageView
