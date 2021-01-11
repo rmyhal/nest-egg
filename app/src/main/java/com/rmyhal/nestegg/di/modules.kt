@@ -22,7 +22,7 @@ private val fragmentsModule = module {
 
 private val viewModelsModule = module {
     viewModel { BalancesViewModel(get(), get(), get(), get()) }
-    viewModel { AddBalanceViewModel(get(), get()) }
+    viewModel { AddBalanceViewModel(get(), get(), get(), get()) }
 }
 
 private val globalModule = module {

@@ -51,9 +51,8 @@ class AddBalanceFragment(private val viewModel: AddBalanceViewModel) : BaseFragm
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        lifecycleScope.launchWhenStarted {
-            viewModel.props.collect(::render)
-        }
+        lifecycleScope.launchWhenStarted { viewModel.props.collect(::render) }
+        lifecycleScope.launchWhenStarted { viewModel.actions.collect(::handleAction) }
         initCurrencyView()
         setupListeners()
     }
@@ -69,13 +68,19 @@ class AddBalanceFragment(private val viewModel: AddBalanceViewModel) : BaseFragm
         }
     }
 
+    private fun handleAction(action: AddBalanceViewModel.Action) {
+
+    }
+
     private fun setupListeners() {
         binding.btnClose.setOnClickListener { dismissListener.dismiss() }
         binding.btnDone.setOnClickListener {
-            viewModel.onSaveClicked(
-                binding.txtName.editText?.text.toString(),
-                binding.txtAmount.editText?.text.toString(),
-                txtCurrency.text.toString()
+            viewModel.onAction(
+                AddBalanceViewModel.Action.OnSaveClicked(
+                    binding.txtName.editText?.text.toString(),
+                    binding.txtAmount.editText?.text.toString(),
+                    txtCurrency.text.toString()
+                )
             )
         }
         binding.txtName.editText?.addTextChangedListener {
