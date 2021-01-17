@@ -6,13 +6,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
+import com.rmyhal.nestegg.R
 import com.rmyhal.nestegg.databinding.FragmentBalancesBinding
 import com.rmyhal.nestegg.ui.base.BaseFragment
+import com.rmyhal.nestegg.ui.global.SwipeToDeleteCallback
 import kotlinx.coroutines.flow.collect
 
 class BalancesFragment(private val viewModel: BalancesViewModel) : BaseFragment<FragmentBalancesBinding>() {
 
+    private val swipeToDelete: SwipeToDeleteCallback by lazy(LazyThreadSafetyMode.NONE) {
+        SwipeToDeleteCallback(requireContext()) { position ->
+            viewModel.onAction(BalancesViewModel.Action.OnBalanceSwiped(position))
+        }
+    }
     private val balancesAdapter = BalancesAdapter()
     private var arrowsRotated = false
     private lateinit var addBalanceNavigation: AddBalanceNavigation
@@ -33,7 +44,7 @@ class BalancesFragment(private val viewModel: BalancesViewModel) : BaseFragment<
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lifecycleScope.launchWhenStarted { viewModel.props.collect(::render) }
-        lifecycleScope.launchWhenStarted { viewModel.actions.collect(::handleAction) }
+        lifecycleScope.launchWhenStarted { viewModel.events.collect(::handleEvent) }
         initRecycler()
         setupListeners()
     }
@@ -44,16 +55,24 @@ class BalancesFragment(private val viewModel: BalancesViewModel) : BaseFragment<
         balancesAdapter.setBalances(props.balances)
     }
 
-    private fun handleAction(action: BalancesViewModel.Action) {
-        when (action) {
-            BalancesViewModel.Action.OnAddBalanceClicked -> addBalanceNavigation.navigateToAddBalance(binding.fabAddBalance)
-            BalancesViewModel.Action.OnTotalBalanceCurrencyClicked -> animateArrows()
+    private fun handleEvent(event: BalancesViewModel.Event) {
+        when (event) {
+            BalancesViewModel.Event.NavigateToAddBalance -> addBalanceNavigation.navigateToAddBalance(binding.fabAddBalance)
+            BalancesViewModel.Event.AnimateCurrencyArrows -> animateArrows()
+            is BalancesViewModel.Event.DeleteBalance -> {
+                balancesAdapter.delete(event.position)
+                showUndoSnackBar()
+            }
+            is BalancesViewModel.Event.RestoreBalance -> balancesAdapter.insert(event.balance, event.position)
         }
     }
 
     private fun initRecycler() {
         binding.rvBalances.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        binding.rvBalances.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        val itemTouchHelper = ItemTouchHelper(swipeToDelete)
+        itemTouchHelper.attachToRecyclerView(binding.rvBalances)
         binding.rvBalances.adapter = balancesAdapter
     }
 
@@ -74,12 +93,27 @@ class BalancesFragment(private val viewModel: BalancesViewModel) : BaseFragment<
         arrowsRotated = arrowsRotated.not()
     }
 
+    private fun showUndoSnackBar() {
+        snackBar(getString(R.string.balances_item_deleted)) {
+            setAction(R.string.balances_undo_delete) {
+                viewModel.onAction(BalancesViewModel.Action.OnUndoDeleteClicked)
+            }
+            addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>(){
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    if (event != DISMISS_EVENT_ACTION) {
+                        viewModel.onAction(BalancesViewModel.Action.OnDeleteSnackBarDismissed)
+                    }
+                }
+            })
+        }
+    }
+
     data class Props(
         val totalBalance: String = "-",
         val currency: String = "/",
         val balances: List<Balance> = emptyList(),
     ) {
-        data class Balance(val name: String, val amount: String)
+        data class Balance(val name: String, val amount: String, val icon: Int)
     }
 
     interface AddBalanceNavigation {

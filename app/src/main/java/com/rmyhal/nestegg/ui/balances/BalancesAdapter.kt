@@ -21,6 +21,16 @@ class BalancesAdapter : RecyclerView.Adapter<BalancesAdapter.BalanceViewHolder>(
         holder.bind(balances[position])
     }
 
+    fun delete(position: Int) {
+        balances.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    fun insert(balance: BalancesFragment.Props.Balance, position: Int) {
+        balances.add(position, balance)
+        notifyItemInserted(position)
+    }
+
     fun setBalances(newBalances: List<BalancesFragment.Props.Balance>) {
         balances.clear()
         balances.addAll(newBalances)

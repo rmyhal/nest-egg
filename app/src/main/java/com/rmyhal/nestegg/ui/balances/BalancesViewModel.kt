@@ -26,13 +26,14 @@ class BalancesViewModel(
     val props: StateFlow<BalancesFragment.Props>
         get() = _props
 
-    private val actionChannel: Channel<Action> = Channel(Channel.RENDEZVOUS)
-    val actions: Flow<Action>
-        get() = actionChannel.consumeAsFlow()
+    private val eventChannel: Channel<Event> = Channel(Channel.RENDEZVOUS)
+    val events: Flow<Event>
+        get() = eventChannel.consumeAsFlow()
 
     private var totalBalanceJob: Job? = null
     private var selectedCurrency = currenciesInteractor.getLastSelectedCurrencyCode()
     private val supportedCurrencies: ArrayDeque<String> = ArrayDeque(currenciesInteractor.supportedCurrencies)
+    private var recentlyDeletedBalance: BalancesFragment.Props.Balance? = null
 
     init {
         viewModelScope.launch {
@@ -55,10 +56,29 @@ class BalancesViewModel(
 
     fun onAction(action: Action) {
         when (action) {
-            Action.OnTotalBalanceCurrencyClicked -> changeTotalBalanceCurrency()
-            else -> {}
+            Action.OnTotalBalanceCurrencyClicked -> {
+                changeTotalBalanceCurrency()
+                eventChannel.offer(Event.AnimateCurrencyArrows)
+            }
+            is Action.OnBalanceSwiped -> {
+                recentlyDeletedBalance = _props.value.balances[action.position]
+                eventChannel.offer(Event.DeleteBalance(action.position))
+            }
+            Action.OnAddBalanceClicked -> {
+                eventChannel.offer(Event.NavigateToAddBalance)
+            }
+            Action.OnUndoDeleteClicked -> {
+                recentlyDeletedBalance?.let { balance ->
+                    eventChannel.offer(Event.RestoreBalance(balance, _props.value.balances.indexOf(balance)))
+                }
+            }
+            Action.OnDeleteSnackBarDismissed -> {
+                recentlyDeletedBalance?.let {
+                    balancesInteractor.deleteBalance()
+                }
+                recentlyDeletedBalance = null
+            }
         }
-        actionChannel.offer(action)
     }
 
     private fun changeTotalBalanceCurrency() {
@@ -87,5 +107,15 @@ class BalancesViewModel(
     sealed class Action {
         object OnAddBalanceClicked : Action()
         object OnTotalBalanceCurrencyClicked : Action()
+        class OnBalanceSwiped(val position: Int) : Action()
+        object OnUndoDeleteClicked : Action()
+        object OnDeleteSnackBarDismissed : Action()
+    }
+
+    sealed class Event {
+        object NavigateToAddBalance : Event()
+        object AnimateCurrencyArrows : Event()
+        class DeleteBalance(val position: Int) : Event()
+        class RestoreBalance(val balance: BalancesFragment.Props.Balance, val position: Int) : Event()
     }
 }

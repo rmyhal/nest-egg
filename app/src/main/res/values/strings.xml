@@ -3,6 +3,8 @@
 
     <!--region balances-->
     <string name="balances_title">Account Balance</string>
+    <string name="balances_undo_delete">Undo</string>
+    <string name="balances_item_deleted">1 deleted</string>
     <!--endregion-->
 
     <!--region add balance-->
@@ -13,14 +15,14 @@
     <string name="add_balance_name_error">Name is required</string>
     <string name="add_balance_amount_error">Amount is required</string>
     <string name="add_balance_currency_error">Currency is required</string>
-    <string name="add_balance_saved">Balance "%s" has been added</string>
+    <string name="add_balance_saved">Balance \'%s\' has been added</string>
     <!--endregion-->
 
     <!--region goals-->
     <string name="goals_title">Goals</string>
     <!--endregion-->
 
-    <!--region utils-->
+    <!--region general-->
     <string name="connection_error">Can\'t connect to the internet, check your connection and try again.</string>
     <string name="general_error">Something went wrong</string>
     <string name="fab_tag">fab</string>

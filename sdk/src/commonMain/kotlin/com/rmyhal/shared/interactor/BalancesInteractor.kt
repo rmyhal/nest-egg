@@ -29,4 +29,8 @@ class BalancesInteractor internal constructor(
                 TotalBalance(result, baseCurrency)
             }
     }
+
+    fun deleteBalance() {
+        // TODO not implemented
+    }
 }
