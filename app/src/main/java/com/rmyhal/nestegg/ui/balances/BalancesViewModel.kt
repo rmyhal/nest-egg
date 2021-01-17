@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.rmyhal.nestegg.system.ResourceManager
 import com.rmyhal.nestegg.ui.global.CurrencyFormatter
 import com.rmyhal.nestegg.util.ExceptionHandler
+import com.rmyhal.shared.entity.Balance
 import com.rmyhal.shared.interactor.BalancesInteractor
 import com.rmyhal.shared.interactor.CurrenciesInteractor
 import kotlinx.coroutines.Job
@@ -33,13 +34,16 @@ class BalancesViewModel(
     private var totalBalanceJob: Job? = null
     private var selectedCurrency = currenciesInteractor.getLastSelectedCurrencyCode()
     private val supportedCurrencies: ArrayDeque<String> = ArrayDeque(currenciesInteractor.supportedCurrencies)
-    private var recentlyDeletedBalance: BalancesFragment.Props.Balance? = null
+
+    private var recentlyDeletedBalanceIndex: Int? = null
+    private val localBalances: MutableList<Balance> = mutableListOf()
 
     init {
         viewModelScope.launch {
             totalBalanceJob = getTotalBalance(selectedCurrency)
             launch {
                 balancesInteractor.getBalances().collect { balances ->
+                    localBalances.apply { clear(); addAll(balances) }
                     _props.value = _props.value.copy(
                         balances = balances.map { balance ->
                             BalancesFragment.Props.Balance(
@@ -61,22 +65,23 @@ class BalancesViewModel(
                 eventChannel.offer(Event.AnimateCurrencyArrows)
             }
             is Action.OnBalanceSwiped -> {
-                recentlyDeletedBalance = _props.value.balances[action.position]
+                recentlyDeletedBalanceIndex = action.position
                 eventChannel.offer(Event.DeleteBalance(action.position))
             }
             Action.OnAddBalanceClicked -> {
                 eventChannel.offer(Event.NavigateToAddBalance)
             }
             Action.OnUndoDeleteClicked -> {
-                recentlyDeletedBalance?.let { balance ->
-                    eventChannel.offer(Event.RestoreBalance(balance, _props.value.balances.indexOf(balance)))
+                recentlyDeletedBalanceIndex?.let { position ->
+                    eventChannel.offer(Event.RestoreBalance(_props.value.balances[position], position))
                 }
             }
             Action.OnDeleteSnackBarDismissed -> {
-                recentlyDeletedBalance?.let {
-                    balancesInteractor.deleteBalance()
+                recentlyDeletedBalanceIndex?.let { position ->
+                    val balance = localBalances[position]
+                    balancesInteractor.deleteBalance(balance.name, balance.currencyCode)
                 }
-                recentlyDeletedBalance = null
+                recentlyDeletedBalanceIndex = null
             }
         }
     }

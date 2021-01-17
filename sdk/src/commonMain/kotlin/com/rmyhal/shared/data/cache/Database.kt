@@ -26,6 +26,10 @@ internal class Database(databaseDriverFactory: DatabaseDriverFactory) {
         dbQuery.insertBalance(balanceEntity.name, balanceEntity.amount, balanceEntity.currencyCode)
     }
 
+    fun deleteBalance(name: String, currencyCode: String) {
+        dbQuery.deleteBalance(name, currencyCode)
+    }
+
     fun getRatesForCurrency(baseCurrency: String): Map<String, Float> {
         return dbQuery.getRatesForCurrency(baseCurrency) { to, rate, _ -> to to rate }
             .executeAsList()

@@ -4,7 +4,9 @@ import com.rmyhal.shared.data.cache.Database
 import com.rmyhal.shared.data.cache.entity.BalanceEntity
 import com.rmyhal.shared.entity.Balance
 import com.rmyhal.shared.entity.TotalBalance
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.transform
 
 class BalancesInteractor internal constructor(
     private val database: Database,
@@ -30,7 +32,7 @@ class BalancesInteractor internal constructor(
             }
     }
 
-    fun deleteBalance() {
-        // TODO not implemented
+    fun deleteBalance(name: String, currencyCode: String) {
+        database.deleteBalance(name, currencyCode)
     }
 }

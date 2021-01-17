@@ -3,13 +3,19 @@ import java.lang.Float;
 CREATE TABLE Balance (
     name TEXT NOT NULL,
     amount REAL AS Float NOT NULL DEFAULT 0,
-    currencyCode TEXT NOT NULL
+    currencyCode TEXT NOT NULL,
+    PRIMARY KEY (name, currencyCode)
 );
 
 insertBalance:
 INSERT OR REPLACE
 INTO Balance
 VALUES(?, ?, ?);
+
+deleteBalance:
+DELETE
+FROM Balance
+WHERE name = :name AND currencyCode = :code;
 
 getAllBalances:
 SELECT *
