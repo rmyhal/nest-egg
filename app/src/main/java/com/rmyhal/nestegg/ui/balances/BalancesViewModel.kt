@@ -2,6 +2,7 @@ package com.rmyhal.nestegg.ui.balances
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rmyhal.nestegg.system.ResourceManager
 import com.rmyhal.nestegg.ui.global.CurrencyFormatter
 import com.rmyhal.nestegg.util.ExceptionHandler
 import com.rmyhal.shared.interactor.BalancesInteractor
@@ -10,12 +11,15 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.util.*
+import kotlin.collections.ArrayDeque
 
 class BalancesViewModel(
     private val balancesInteractor: BalancesInteractor,
     private val currenciesInteractor: CurrenciesInteractor,
     private val formatter: CurrencyFormatter,
-    private val exceptionHandler: ExceptionHandler
+    private val exceptionHandler: ExceptionHandler,
+    private val resourceManager: ResourceManager
 ) : ViewModel() {
 
     private val _props = MutableStateFlow(BalancesFragment.Props())
@@ -39,7 +43,8 @@ class BalancesViewModel(
                         balances = balances.map { balance ->
                             BalancesFragment.Props.Balance(
                                 balance.name,
-                                formatter.toCurrencyFormat(balance.amount, balance.currencyCode)
+                                "${balance.currencyCode} – ${formatter.formatAmount(balance.amount, 2)}",
+                                resourceManager.getDrawableResByName(getCurrencyIconName(balance.currencyCode))
                             )
                         }
                     )
@@ -75,6 +80,9 @@ class BalancesViewModel(
                 )
             }
     }
+
+    private fun getCurrencyIconName(currencyCode: String): String =
+        "ic_${currencyCode.toLowerCase(Locale.getDefault())}_flag"
 
     sealed class Action {
         object OnAddBalanceClicked : Action()

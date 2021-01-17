@@ -31,6 +31,7 @@ class BalancesAdapter : RecyclerView.Adapter<BalancesAdapter.BalanceViewHolder>(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(balance: BalancesFragment.Props.Balance) = with(binding) {
+            icon.setImageResource(balance.icon)
             txtAmount.text = balance.amount
             txtTitle.text = balance.name
         }
