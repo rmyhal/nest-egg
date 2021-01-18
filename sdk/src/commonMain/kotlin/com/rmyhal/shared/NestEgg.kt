@@ -12,6 +12,7 @@ import kotlinx.serialization.json.Json
 
 open class NestEgg internal constructor(
     private val prefs: Prefs,
+    httpClientFactory: HttpClientFactory,
     driverFactory: DatabaseDriverFactory
 ) {
 
@@ -20,8 +21,6 @@ open class NestEgg internal constructor(
         isLenient = true
         encodeDefaults = false
     }
-
-    private val httpClientFactory = HttpClientFactory()
 
     private val database = Database(driverFactory)
     private val ratesApi = RatesApi(httpClientFactory.create(json, true))

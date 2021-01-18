@@ -25,8 +25,8 @@ kotlin {
         }
     }
 
-    val onPhone = System.getenv("SDK_NAME")?.startsWith("iphoneos") ?: false
-    if (onPhone) {
+    val isiOSDevice = System.getenv("SDK_NAME").orEmpty().startsWith("iphoneos")
+    if (isiOSDevice) {
         iosArm64("ios")
     } else {
         iosX64("ios")
@@ -34,7 +34,7 @@ kotlin {
 
     val serializationVersion = "1.0.0-RC"
     val sqldelightVersion = "1.4.3"
-    val ktorVersion = "1.4.0"
+    val ktorVersion = "1.5.0"
 
     sourceSets {
         val commonMain by getting {
@@ -42,7 +42,7 @@ kotlin {
                 implementation("com.squareup.sqldelight:runtime:$sqldelightVersion")
                 implementation("com.squareup.sqldelight:coroutines-extensions:$sqldelightVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9-native-mt")
                 implementation("com.github.aakira:napier:1.5.0-alpha1")
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
                 implementation("io.ktor:ktor-client-serialization:$ktorVersion")
@@ -58,8 +58,8 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation("com.squareup.sqldelight:android-driver:$sqldelightVersion")
-                implementation("io.ktor:ktor-client-android:$ktorVersion")
-                implementation("androidx.datastore:datastore-preferences:1.0.0-alpha05")
+                implementation("io.ktor:ktor-client-okhttp:1.4.0")
+                implementation("androidx.datastore:datastore-preferences:1.0.0-alpha06")
             }
         }
         val iosMain by getting {

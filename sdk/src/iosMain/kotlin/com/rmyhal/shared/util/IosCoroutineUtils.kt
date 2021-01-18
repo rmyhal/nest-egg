@@ -1,7 +1,7 @@
 package com.rmyhal.shared.util
 
 import com.github.aakira.napier.Napier
-import com.squareup.sqldelight.db.Closeable
+import io.ktor.utils.io.core.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
@@ -38,6 +38,7 @@ internal object MainLoopDispatcher : CoroutineDispatcher(), Delay {
         }
     }
 
+    @InternalCoroutinesApi
     override fun invokeOnTimeout(
         timeMillis: Long,
         block: Runnable,
