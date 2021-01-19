@@ -49,21 +49,22 @@ class BalancesFragment(private val viewModel: BalancesViewModel) : BaseFragment<
         setupListeners()
     }
 
+    override fun onDestroyView() {
+        viewModel.onAction(BalancesViewModel.Action.OnDeleteSnackBarDismissed)
+        super.onDestroyView()
+    }
+
     private fun render(props: Props) = with(binding) {
         txtTotalAmount.text = props.totalBalance
         txtTotalCurrency.text = props.currency
-        balancesAdapter.setBalances(props.balances)
+        balancesAdapter.submitList(props.balances)
     }
 
     private fun handleEvent(event: BalancesViewModel.Event) {
         when (event) {
             BalancesViewModel.Event.NavigateToAddBalance -> addBalanceNavigation.navigateToAddBalance(binding.fabAddBalance)
             BalancesViewModel.Event.AnimateCurrencyArrows -> animateArrows()
-            is BalancesViewModel.Event.DeleteBalance -> {
-                balancesAdapter.delete(event.position)
-                showUndoSnackBar()
-            }
-            is BalancesViewModel.Event.RestoreBalance -> balancesAdapter.insert(event.balance, event.position)
+            is BalancesViewModel.Event.ShowUndoButton -> showUndoSnackBar()
         }
     }
 

@@ -35,7 +35,7 @@ class BalancesViewModel(
     private var selectedCurrency = currenciesInteractor.getLastSelectedCurrencyCode()
     private val supportedCurrencies: ArrayDeque<String> = ArrayDeque(currenciesInteractor.supportedCurrencies)
 
-    private var recentlyDeletedBalanceIndex: Int? = null
+    private var recentlyDeletedBalance: RecentlyDeletedBalance? = null
     private val localBalances: MutableList<Balance> = mutableListOf()
 
     init {
@@ -48,7 +48,7 @@ class BalancesViewModel(
                         balances = balances.map { balance ->
                             BalancesFragment.Props.Balance(
                                 balance.name,
-                                "${balance.currencyCode} – ${formatter.formatAmount(balance.amount, 2)}",
+                                getBalanceAmount(balance),
                                 resourceManager.getDrawableResByName(getCurrencyIconName(balance.currencyCode))
                             )
                         }
@@ -65,23 +65,27 @@ class BalancesViewModel(
                 eventChannel.offer(Event.AnimateCurrencyArrows)
             }
             is Action.OnBalanceSwiped -> {
-                recentlyDeletedBalanceIndex = action.position
-                eventChannel.offer(Event.DeleteBalance(action.position))
+                val balances = _props.value.balances.toMutableList()
+                val balanceToRemove = balances.removeAt(action.position)
+                recentlyDeletedBalance = RecentlyDeletedBalance(balanceToRemove, action.position)
+                _props.value = _props.value.copy(balances = balances)
+                eventChannel.offer(Event.ShowUndoButton)
             }
             Action.OnAddBalanceClicked -> {
                 eventChannel.offer(Event.NavigateToAddBalance)
             }
             Action.OnUndoDeleteClicked -> {
-                recentlyDeletedBalanceIndex?.let { position ->
-                    eventChannel.offer(Event.RestoreBalance(_props.value.balances[position], position))
+                recentlyDeletedBalance?.let { removed ->
+                    val newBalances = _props.value.balances.toMutableList().apply { add(removed.position, removed.balance) }
+                    _props.value = _props.value.copy(balances = newBalances)
                 }
             }
             Action.OnDeleteSnackBarDismissed -> {
-                recentlyDeletedBalanceIndex?.let { position ->
-                    val balance = localBalances[position]
+                recentlyDeletedBalance?.let { deleteBalance ->
+                    val balance = localBalances[deleteBalance.position]
                     balancesInteractor.deleteBalance(balance.name, balance.currencyCode)
                 }
-                recentlyDeletedBalanceIndex = null
+                recentlyDeletedBalance = null
             }
         }
     }
@@ -106,8 +110,10 @@ class BalancesViewModel(
             }
     }
 
-    private fun getCurrencyIconName(currencyCode: String): String =
-        "ic_${currencyCode.toLowerCase(Locale.getDefault())}_flag"
+    private fun getCurrencyIconName(currencyCode: String): String = "ic_${currencyCode.toLowerCase(Locale.getDefault())}_flag"
+
+    private fun getBalanceAmount(balance: Balance) =
+        "${balance.currencyCode} – ${formatter.formatAmount(balance.amount, BALANCE_AMOUNT_FRACTION_DIGITS)}"
 
     sealed class Action {
         object OnAddBalanceClicked : Action()
@@ -120,7 +126,12 @@ class BalancesViewModel(
     sealed class Event {
         object NavigateToAddBalance : Event()
         object AnimateCurrencyArrows : Event()
-        class DeleteBalance(val position: Int) : Event()
-        class RestoreBalance(val balance: BalancesFragment.Props.Balance, val position: Int) : Event()
+        object ShowUndoButton : Event()
+    }
+
+    data class RecentlyDeletedBalance(val balance: BalancesFragment.Props.Balance, val position: Int)
+
+    companion object {
+        private const val BALANCE_AMOUNT_FRACTION_DIGITS = 2
     }
 }
