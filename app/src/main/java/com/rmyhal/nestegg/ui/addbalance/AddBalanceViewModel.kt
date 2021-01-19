@@ -24,14 +24,13 @@ class AddBalanceViewModel(
     val props: StateFlow<AddBalanceFragment.Props>
         get() = _props
 
-    private val actionsChannel = Channel<Action>(Channel.RENDEZVOUS)
-    val actions: Flow<Action> get() = actionsChannel.consumeAsFlow()
+    private val eventsChannel = Channel<Event>(Channel.RENDEZVOUS)
+    val events: Flow<Event> get() = eventsChannel.consumeAsFlow()
 
     fun onAction(action: Action) {
         when (action) {
             is Action.OnSaveClicked -> onSaveClicked(action.name, action.amount, action.currency)
         }
-        actionsChannel.offer(action)
     }
 
     private fun onSaveClicked(name: String?, amount: String?, currency: String?) {
@@ -39,8 +38,8 @@ class AddBalanceViewModel(
         if (fieldWithError == null) {
             requireNotNull(name); requireNotNull(amount); requireNotNull(currency)
             balancesInteractor.saveBalance(name, amount.toFloat(), currency)
-            _props.value = _props.value.copy(saveStatus = AddBalanceFragment.Props.SaveStatus.Saved)
             systemMessageNotifier.send(resourceManager.getString(R.string.add_balance_saved, name))
+            eventsChannel.offer(Event.NavigateToBalances)
         } else {
             _props.value = _props.value.copy(saveStatus = AddBalanceFragment.Props.SaveStatus.Error(fieldWithError))
         }
@@ -59,5 +58,9 @@ class AddBalanceViewModel(
 
     sealed class Action {
         class OnSaveClicked(val name: String?, val amount: String?, val currency: String?) : Action()
+    }
+
+    sealed class Event {
+        object NavigateToBalances : Event()
     }
 }

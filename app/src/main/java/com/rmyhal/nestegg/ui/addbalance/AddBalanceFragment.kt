@@ -52,7 +52,7 @@ class AddBalanceFragment(private val viewModel: AddBalanceViewModel) : BaseFragm
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lifecycleScope.launchWhenStarted { viewModel.props.collect(::render) }
-        lifecycleScope.launchWhenStarted { viewModel.actions.collect(::handleAction) }
+        lifecycleScope.launchWhenStarted { viewModel.events.collect(::handleEvent) }
         initCurrencyView()
         setupListeners()
     }
@@ -61,15 +61,16 @@ class AddBalanceFragment(private val viewModel: AddBalanceViewModel) : BaseFragm
         currenciesAdapter.clear()
         currenciesAdapter.addAll(props.currencies)
         when (props.saveStatus) {
-            Props.SaveStatus.Saved -> dismissListener.dismiss()
             is Props.SaveStatus.Error -> showError(props.saveStatus.field)
             else -> { // ignored
             }
         }
     }
 
-    private fun handleAction(action: AddBalanceViewModel.Action) {
-
+    private fun handleEvent(event: AddBalanceViewModel.Event) {
+        when (event) {
+            AddBalanceViewModel.Event.NavigateToBalances -> dismissListener.dismiss()
+        }
     }
 
     private fun setupListeners() {
@@ -149,7 +150,6 @@ class AddBalanceFragment(private val viewModel: AddBalanceViewModel) : BaseFragm
 
         sealed class SaveStatus {
             object Default : SaveStatus()
-            object Saved : SaveStatus()
             data class Error(val field: Field) : SaveStatus() {
                 enum class Field { NAME, AMOUNT, CURRENCY }
             }
